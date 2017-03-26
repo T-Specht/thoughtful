@@ -4,6 +4,10 @@
   "description": "",
   "main": "dist/index.js",
   "types": "dist/src",
+  "repository": {
+    "url": "https://github.com/T-Specht/thoughtful",
+    "type": "git"
+  },
   "dependencies": {
     "ts-loader": "^2.0.3",
     "ts-node": "^3.0.2",
