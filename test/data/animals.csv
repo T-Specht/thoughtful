@@ -1,0 +1,17 @@
+label;weight;size;agressiveness
+Löwe;90;100;80
+Löwe;80;120;100
+Löwe;75;140;75
+Löwe;85;130;88
+Wal;10000;500;0
+Wal;11000;600;10
+Wal;12000;550;2
+Wal;10123;611;1
+Hauskatze;30;30;4
+Hauskatze;20;29;6
+Hauskatze;33;31;11
+Hauskatze;25;40;20
+Maus;2;6;0
+Maus;5;4;1
+Maus;4;2;2
+Maus;2;9;0
