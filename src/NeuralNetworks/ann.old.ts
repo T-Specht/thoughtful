@@ -17,17 +17,16 @@ export module FeedForward {
 
         constructor(private options: {
             numberOfNeurons: number,
-            numberOfNeuronsInPrevLayer: number,
+            numberOfNeuronsInNextLayer: number,
             netOptions: ANNOptions
         }) {
-        
             // +1 for bias Unit
-            for (let i = 0; i < options.numberOfNeurons + 1; i++) {              
+            for (let i = 0; i < options.numberOfNeurons + 1; i++) {
                 this.neurons.push(new Neuron({
                     index: i - 1,
                     isBiasUnit: i == 0,
                     netOptions: options.netOptions,
-                    numberOfNeuronsInPrevLayer: options.numberOfNeuronsInPrevLayer
+                    numberOfNeuronsInNextLayer: options.numberOfNeuronsInNextLayer
                 }));
             }
         }
@@ -54,12 +53,11 @@ export module FeedForward {
         // Bias units have index == -1
         constructor(private options: {
             index: number,
-            numberOfNeuronsInPrevLayer: number,
+            numberOfNeuronsInNextLayer: number,
             netOptions: ANNOptions,
             isBiasUnit: boolean
         }) {
-            // + 1 for Bias Unit            
-            for (let i = 0; i < options.numberOfNeuronsInPrevLayer + 1; i++)
+            for (let i = 0; i < options.numberOfNeuronsInNextLayer; i++)
                 this.weights.push(new Weight());
 
             if (options.isBiasUnit) this.setOutput(1);
@@ -71,45 +69,45 @@ export module FeedForward {
             if (this.options.isBiasUnit) {
                 throw 'Cannot activate Bias Unit!';
             }
-            
-            this.input = prevLayer.neurons.reduce((sum, n, i) => {
-                return sum + n.output * this.weights[i].value;
-            }, 0);
-
+            this.input = 0;
+            prevLayer.forEachNeuron(n => this.input += n.output * n.getWeightToNeuronFromNextLayer(this).value);
             this.output = this.activationFunction.output(this.input);
-            
         };
 
         public calculateDelta(nextLayer: Layer, targetValue?: number) {
-            if(!nextLayer){
-                //Output layer                
-                this.delta = this.options.netOptions.errorFunction.der(this.output, targetValue) * this.activationFunction.der(this.input);
-                
-            }else{
+            if (nextLayer) {
                 let deltaSum = 0;
-                nextLayer.forEachNeuron((n, i) => {
-                    deltaSum += n.delta * n.weights[this.getIndex()+1].value;
+                nextLayer.forEachNeuron(n => {
+                    deltaSum += n.delta * this.getWeightToNeuronFromNextLayer(n).value;
                 }, true);
-                this.delta = deltaSum * this.activationFunction.der(this.input);
+                this.delta = this.activationFunction.output(this.input) * deltaSum;
+            } else {
+                // Neuron in Output Layer
+                this.delta = this.options.netOptions.errorFunction.der(this.output, targetValue) * this.activationFunction.der(this.input);
             }
         }
 
         public updateWeights(prevLayer: Layer) {
-
-            /*console.log('Weights length', this.weights.length);*/
-            
-            
-           this.weights = this.weights.map((w, i) => {                
-                let derivative = prevLayer.neurons[i].output * this.delta;
-                w.value =w.value - this.options.netOptions.learningRate * derivative;
-                return w;
-           });
-           /*console.log('________');*/
-           
+            prevLayer.forEachNeuron((n, i) => {
+                let oldWeight = this.getWeightToThisNeuronFromPrevLayerNeuron(n).value;
+                let newWeight = oldWeight - this.options.netOptions.learningRate * this.delta * n.output;
+                this.setWeightToThisNeuronFromPrevLayerNeuron(n, newWeight);
+            });
         }
 
         public isBias() {
             return this.options.isBiasUnit;
+        }
+
+        public getWeightToNeuronFromNextLayer(n: Neuron) {
+            return this.weights[n.options.index];
+        }
+        public getWeightToThisNeuronFromPrevLayerNeuron(n: Neuron) {
+
+            return n.weights[this.options.index];
+        }
+        public setWeightToThisNeuronFromPrevLayerNeuron(n: Neuron, value: number) {
+            n.weights[this.options.index].value = value;
         }
 
 
@@ -138,13 +136,10 @@ export module FeedForward {
             options.layers.forEach((l, i) => {
                 this.layers.push(new Layer({
                     numberOfNeurons: l,
-                    numberOfNeuronsInPrevLayer: options.layers[i - 1] || 0,
+                    numberOfNeuronsInNextLayer: options.layers[i + 1] || 0,
                     netOptions: options
                 }));
             });
-
-            //console.log(this.layers.map(l => l.neurons.length));
-            
         }
 
         private get inputLayer() {
@@ -163,12 +158,13 @@ export module FeedForward {
         }
 
         public feedForwardPass(values: number[]) {
-            // Set Output Signal of Input Layer Neurons
-            this.inputLayer.forEachNeuron((n, i) => n.setOutput(values[i]), true);
+            this.inputLayer.forEachNeuron((n, i) => {
+                n.setOutput(values[i]);
+            }, true);
 
-            for(let i = 1; i < this.layers.length; i++){
+            for (let i = 1; i < this.layers.length; i++) {
                 let layer = this.layers[i];
-                let prevLayer = this.layers[i-1];
+                let prevLayer = this.layers[i - 1];
                 layer.forEachNeuron(n => n.activate(prevLayer), true);
             }
 
@@ -176,18 +172,21 @@ export module FeedForward {
         }
 
         public backwardPass(targetValues: number[]) {
-            for(let i = this.layers.length - 1; i > 0; i--){
+            let output = this.getOutput();
+            this.outputLayer.forEachNeuron((n, i) => n.calculateDelta(undefined, targetValues[i]), true);
+
+            for (let i = this.layers.length - 2; i >= 0; i--) {
                 let layer = this.layers[i];
-                let nextLayer = this.layers[i+1];
-                layer.forEachNeuron((n, i) => n.calculateDelta(nextLayer, targetValues[i]), true);
+                let nextLayer = this.layers[i + 1];
+                layer.forEachNeuron(n => n.calculateDelta(nextLayer), true);
             }
             return this;
         }
 
         public updateWeights() {
-            for(let i = 1; i < this.layers.length; i++){
-                let layer = this.layers[i];                
-                let prevLayer = this.layers[i-1];
+            for (let i = 1; i < this.layers.length; i++) {
+                let layer = this.layers[i];
+                let prevLayer = this.layers[i - 1];
                 layer.forEachNeuron(n => n.updateWeights(prevLayer), true);
             }
             return this;
