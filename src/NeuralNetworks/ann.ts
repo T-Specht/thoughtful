@@ -6,7 +6,8 @@ export module FeedForward {
         learningRate: number,
         layers: number[],
         activationFunction: ActivationFunction,
-        errorFunction: ErrorFunction
+        errorFunction: ErrorFunction,
+        momentum: number
     }
 
 
@@ -41,11 +42,12 @@ export module FeedForward {
     }
 
     class Neuron {
-        private weights: Weight[] = [];
+        public weights: Weight[] = [];
         public input: number;
         public output: number;
         private activationFunction: ActivationFunction;
         public delta: number;
+        public prevDelta: number = 0;
 
 
         // Bias units are the last ones in array
@@ -93,6 +95,7 @@ export module FeedForward {
          */
         public calculateOutputLayerDelta(target: number) {
             if (this.isBias()) throw 'There should not be an output layer delta calculation for a bias unit for it is never used.';
+            this.prevDelta = this.delta || 0;
             this.delta = this.options.netOptions.errorFunction.der(this.output, target) * this.activationFunction.der(this.input);
         }
 
@@ -108,6 +111,7 @@ export module FeedForward {
                 sigma += n.delta * this.weights[i].value;
             }, true);
 
+            this.prevDelta = this.delta || 0;
             this.delta = this.activationFunction.der(this.input) * sigma;
         }
 
@@ -119,7 +123,8 @@ export module FeedForward {
             prevLayer.forEachNeuron((n, i) => {
                 let oldWeight = n.weights[this.getIndex()];
                 let derivativeTerm = n.output * this.delta;
-                oldWeight.value -= this.options.netOptions.learningRate * derivativeTerm;
+                let momentumTerm = this.options.netOptions.momentum * this.prevDelta;
+                oldWeight.value -= this.options.netOptions.learningRate * derivativeTerm + momentumTerm;
             });
         };
 
@@ -167,6 +172,23 @@ export module FeedForward {
                     numberOfNeuronsInNextLayer: options.layers[l + 1] || 0
                 }))
             }
+        }
+
+        /**
+         * Creates new network with specified weights
+         * @param weightData previously saved weights (using Network.exportWeights)
+         * @param options network options
+         */
+        public static restore(weightData: number[][][], options: ANNOptions){
+            let ann = new Network(options);
+            for(let l = 0; l < weightData.length; l++){
+                for(let n = 0; n < weightData[l].length; n++){
+                    for(let w = 0; w < weightData[l][n].length; w++){
+                        ann.layers[l].neurons[n].weights[w].value = weightData[l][n][w]
+                    }
+                }
+            }
+            return ann;
         }
 
         /**
@@ -283,6 +305,19 @@ export module FeedForward {
         public error(inputs: number[], targetValues: number[]){
             this.propagateForward(inputs);
             return this.getCurrentError(targetValues);
+        }
+
+        /**
+         * Export the current weights of the network
+         */
+        public exportWeights(){
+            let data: number[][][] = [];
+            for(let l = 0; l < this.layers.length - 1; l++){
+                let layer = this.layers[l];
+                let layerData = layer.neurons.map(n => n.weights.map(w => w.value));
+                data.push(layerData);
+            }
+            return data;
         }
     }
 }

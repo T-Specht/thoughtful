@@ -5,11 +5,18 @@ export declare module FeedForward {
         layers: number[];
         activationFunction: ActivationFunction;
         errorFunction: ErrorFunction;
+        momentum: number;
     }
     class Network {
         private options;
         private layers;
         constructor(options: ANNOptions);
+        /**
+         * Creates new network with specified weights
+         * @param weightData previously saved weights (using Network.exportWeights)
+         * @param options network options
+         */
+        static restore(weightData: number[][][], options: ANNOptions): Network;
         /**
          * @returns the input layer
          */
@@ -58,5 +65,9 @@ export declare module FeedForward {
          * @param targetValues expected output for given inputs
          */
         error(inputs: number[], targetValues: number[]): number;
+        /**
+         * Export the current weights of the network
+         */
+        exportWeights(): number[][][];
     }
 }

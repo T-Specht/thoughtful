@@ -4,4 +4,5 @@ export interface ErrorFunction {
 }
 export declare class Errors {
     static SQUARE: ErrorFunction;
+    static CROSS_ENTROPY: ErrorFunction;
 }

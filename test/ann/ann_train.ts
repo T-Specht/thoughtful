@@ -1,10 +1,12 @@
-import * as tf from '..';
+import * as tf from '../..';
+import * as fs from 'fs';
 
 let ann = new tf.FeedForward.Network({
     activationFunction: tf.Activations.SIGMOID,
     errorFunction: tf.Errors.SQUARE,
     layers: [2, 3, 1],
-    learningRate: 0.3
+    learningRate: 0.3,
+    momentum: 0
 });
 
 let data = [
@@ -30,11 +32,10 @@ tf.repeat(() => {
     for (let d of data) {
         ann.fit(d.input, d.output);
     }
-}, 1e4);
+}, 1e6);
 
-for (let d of data) {
-    console.log(`Input: [${d.input.join(', ')}]    Output: [${ann.predict(d.input).join(', ')}]`);
-    
-}
+let weights = ann.exportWeights();
+fs.writeFileSync('./network.json', JSON.stringify(weights));
+
 
 
