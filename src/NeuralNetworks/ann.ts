@@ -10,7 +10,7 @@ export module FeedForward {
     }
 
 
-    export class Layer {
+    class Layer {
 
         // neurons[0] → Bias Unit
         public neurons: Neuron[] = [];
@@ -40,7 +40,7 @@ export module FeedForward {
         }
     }
 
-    export class Neuron {
+    class Neuron {
         private weights: Weight[] = [];
         public input: number;
         public output: number;
@@ -68,6 +68,10 @@ export module FeedForward {
 
         }
 
+        /**
+         * Forward pass of values through the neuron using the prevLayer
+         * @param prevLayer i
+         */
         public propagateForward(prevLayer: Layer) {
             if (this.isBias()) {
                 throw 'A bias unit should not propagate a value forward.'
@@ -83,11 +87,19 @@ export module FeedForward {
 
         }
 
+        /**
+         * Calculates the delta of an output neuron using the derivative term of the specified error function of the network and the target value
+         * @param target target value for this output neuron
+         */
         public calculateOutputLayerDelta(target: number) {
             if (this.isBias()) throw 'There should not be an output layer delta calculation for a bias unit for it is never used.';
             this.delta = this.options.netOptions.errorFunction.der(this.output, target) * this.activationFunction.der(this.input);
         }
 
+        /**
+         * Calculates the delta values for neurons in a hidden layer j using the next layer k
+         * @param nextLayer k
+         */
         public calculateHiddenLayerDelta(nextLayer: Layer) {
             if (this.isBias()) throw 'There should not be an hidden layer delta calculation for a bias unit for it is not connected to the previous layer.';
 
@@ -99,13 +111,10 @@ export module FeedForward {
             this.delta = this.activationFunction.der(this.input) * sigma;
         }
 
-        /*public updateWeights(nextLayer: Layer) {
-            this.weights = this.weights.map((w, i) => {
-                let derivative = this.output * nextLayer.neurons[i].delta;
-                w.value -= this.options.netOptions.learningRate * derivative;
-                return w;
-            });
-        };*/
+        /**
+         * Updates the weights which connect the previous layer to the current one using this layer neurons delta values and the output of the previous layer neurons
+         * @param prevLayer the previous layer i
+         */
         public updateWeights(prevLayer: Layer) {
             prevLayer.forEachNeuron((n, i) => {
                 let oldWeight = n.weights[this.getIndex()];
@@ -115,23 +124,31 @@ export module FeedForward {
         };
 
         /**
-         * 
+         * Get the weight to a neuron in the next layer k from current layer k
+         * Weights to layer k are stored in neurons of layer j
          * @param n Neuron in next layer k
          */
         public getWeightTo(n: Neuron) {
             return this.weights[n.getIndex()];
         }
 
+        /**
+         * @returns true if the neuron is a bias unit which means it has a constant output of 1
+         * Info: Bias units are the last ones in the neurons array in each layer object
+         */
         public isBias() {
             return this.options.isBiasUnit;
         }
 
+        /**
+         * @returns the index of the current neuron in its layer ranging from 1 to number of specified neurons in layer + 1 because an extra bias neuron is added at the end of neurons array in a layer object.
+         */
         public getIndex() {
             return this.options.index;
         }
     }
 
-    export class Weight {
+    class Weight {
         public value: number;
         public delta: number;
         constructor(value = Math.random()) {
@@ -140,8 +157,9 @@ export module FeedForward {
     }
 
     export class Network {
-        layers: Layer[] = [];
+        private layers: Layer[] = [];
         constructor(private options: ANNOptions) {
+            // Create net's layers
             for (let l = 0; l < options.layers.length; l++) {
                 this.layers.push(new Layer({
                     netOptions: options,
@@ -151,14 +169,25 @@ export module FeedForward {
             }
         }
 
+        /**
+         * @returns the input layer
+         */
         private get inputLayer() {
             return this.layers[0]
         }
+
+        /**
+         * @returns the output layer
+         */
         private get outputLayer() {
             return this.layers[this.layers.length - 1];
         }
 
-        public propagateForward(inputs: number[]) {
+        /**
+         * Forward Pass of the network where values are propagated through the network
+         * @param inputs input values matching the specified size of the network's input layer
+         */
+        private propagateForward(inputs: number[]) {
             if (inputs.length != this.inputLayer.neurons.length - 1) {
                 throw "Inputs do not match network size!";
             }
@@ -177,11 +206,18 @@ export module FeedForward {
 
         }
 
-        public getCurrentOutput() {
+        /**
+         * @returns the current output of the network
+         */
+        private getCurrentOutput() {
             return this.outputLayer.neurons.map(n => n.output).slice(0, -1);
         }
 
-        public calculateDeltas(targetValues: number[]) {
+        /**
+         * Calculate all the neurons delta values
+         * @param targetValues target values for the network with respect to last forward pass
+         */
+        private calculateDeltas(targetValues: number[]) {
             // calculate Output layer calculateDeltas
             this.outputLayer.forEachNeuron((n, i) => n.calculateOutputLayerDelta(targetValues[i]), true);
 
@@ -195,10 +231,12 @@ export module FeedForward {
             return this;
         }
 
+        /**
+         * Update the connection weights using previous calculated delta values
+         */
+        private updateWeights() {
 
-        public updateWeights() {
-
-            // go through all layers except input layer and update all the weight with the calculated deltaValues.
+            // go through all layers except input layer and update all the weights with the calculated deltaValues.
             for (let l = 1; l < this.layers.length; l++) {
                 let layer = this.layers[l];
                 let prevLayer = this.layers[l - 1];                
@@ -209,19 +247,42 @@ export module FeedForward {
             return this;
         }
 
+        /**
+         * Fits given inputs to given target values by training the network
+         * @param inputs inputs to the network
+         * @param targetValues expected outputs for given input
+         */
         public fit(inputs: number[], targetValues: number[]) {
             this.propagateForward(inputs).calculateDeltas(targetValues).updateWeights();
             return this;
         }
 
+        /**
+         * Predict output values for given inputs
+         * @param inputs input values
+         */
         public predict(inputs: number[]){
             return this.propagateForward(inputs).getCurrentOutput();
         }
 
-        public getCurrentError(targetValues: number[]) {
+        /**
+         * Calculate the error for current outputs
+         * @param targetValues target values
+         */
+        private getCurrentError(targetValues: number[]) {
             return this.getCurrentOutput().reduce((s, o, i) => {
                 return s + this.options.errorFunction.error(o, targetValues[i])
             }, 0);
+        }
+
+        /**
+         * Calculates the error for given inputs
+         * @param inputs inputs to network
+         * @param targetValues expected output for given inputs
+         */
+        public error(inputs: number[], targetValues: number[]){
+            this.propagateForward(inputs);
+            return this.getCurrentError(targetValues);
         }
     }
 }
