@@ -26,6 +26,12 @@ export namespace Normalization{
             });
         }
 
+        public denormalize(row: number[]){
+            return row.map((value, v) => {
+                return v *(this.maxValues[v] - this.minValues[v]) + this.minValues[v];
+            });
+        }
+
 
     }
 }

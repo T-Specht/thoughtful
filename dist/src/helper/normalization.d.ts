@@ -6,5 +6,6 @@ export declare namespace Normalization {
         constructor(data: number[][]);
         normalizeExampleData(): number[][];
         normalizeNewDataRow(row: number[]): number[];
+        denormalize(row: number[]): number[];
     }
 }
