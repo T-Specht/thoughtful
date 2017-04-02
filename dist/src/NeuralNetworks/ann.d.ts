@@ -11,7 +11,7 @@ export declare module FeedForward {
         neurons: Neuron[];
         constructor(options: {
             numberOfNeurons: number;
-            numberOfNeuronsInPrevLayer: number;
+            numberOfNeuronsInNextLayer: number;
             netOptions: ANNOptions;
         });
         forEachNeuron(func: (n: Neuron, i?: number) => void, excludeBias?: boolean): void;
@@ -25,15 +25,20 @@ export declare module FeedForward {
         delta: number;
         constructor(options: {
             index: number;
-            numberOfNeuronsInPrevLayer: number;
+            numberOfNeuronsInNextLayer: number;
             netOptions: ANNOptions;
             isBiasUnit: boolean;
         });
-        activate(prevLayer: Layer): void;
-        calculateDelta(nextLayer: Layer, targetValue?: number): void;
+        propagateForward(prevLayer: Layer): void;
+        calculateOutputLayerDelta(target: number): void;
+        calculateHiddenLayerDelta(nextLayer: Layer): void;
         updateWeights(prevLayer: Layer): void;
+        /**
+         *
+         * @param n Neuron in next layer k
+         */
+        getWeightTo(n: Neuron): Weight;
         isBias(): boolean;
-        setOutput(value: number): void;
         getIndex(): number;
     }
     class Weight {
@@ -47,12 +52,12 @@ export declare module FeedForward {
         constructor(options: ANNOptions);
         private readonly inputLayer;
         private readonly outputLayer;
-        private readonly hiddenLayers;
-        getOutput(): number[];
-        feedForwardPass(values: number[]): this;
-        backwardPass(targetValues: number[]): this;
+        propagateForward(inputs: number[]): this;
+        getCurrentOutput(): number[];
+        calculateDeltas(targetValues: number[]): this;
         updateWeights(): this;
-        train(input: number[], targetValues: number[]): this;
-        error(target: number[]): number;
+        fit(inputs: number[], targetValues: number[]): this;
+        predict(inputs: number[]): number[];
+        getCurrentError(targetValues: number[]): number;
     }
 }

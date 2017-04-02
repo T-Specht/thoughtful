@@ -12,7 +12,7 @@ export class Activations {
         }
     }
     public static SIGMOID: ActivationFunction = {
-        output: x => 1 / (1 + Math.exp(x)),
+        output: x => 1 / (1 + Math.exp(-x)),
         der: x => {
             let output = Activations.SIGMOID.output(x);
             return output * (1 - output);

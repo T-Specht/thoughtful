@@ -17,27 +17,24 @@ export module FeedForward {
 
         constructor(private options: {
             numberOfNeurons: number,
-            numberOfNeuronsInPrevLayer: number,
+            numberOfNeuronsInNextLayer: number,
             netOptions: ANNOptions
         }) {
-        
-            // +1 for bias Unit
-            for (let i = 0; i < options.numberOfNeurons + 1; i++) {              
+            // +1 for one bias unit
+            for (let n = 0; n < options.numberOfNeurons + 1; n++) {
                 this.neurons.push(new Neuron({
-                    index: i - 1,
-                    isBiasUnit: i == 0,
+                    index: n,
+                    isBiasUnit: n == options.numberOfNeurons,
                     netOptions: options.netOptions,
-                    numberOfNeuronsInPrevLayer: options.numberOfNeuronsInPrevLayer
+                    numberOfNeuronsInNextLayer: options.numberOfNeuronsInNextLayer
                 }));
             }
         }
 
-
-
         public forEachNeuron(func: (n: Neuron, i?: number) => void, excludeBias = false) {
-            for (let i = excludeBias ? 1 : 0; i < this.neurons.length; i++) {
+            for (let i = 0; i < this.neurons.length - (excludeBias ? 1 : 0); i++) {
                 let neuron = this.neurons[i]
-                // Bias units have Index of -1
+                // Bias units are the last ones
                 func(neuron, neuron.getIndex());
             }
         }
@@ -51,70 +48,82 @@ export module FeedForward {
         public delta: number;
 
 
-        // Bias units have index == -1
+        // Bias units are the last ones in array
         constructor(private options: {
             index: number,
-            numberOfNeuronsInPrevLayer: number,
+            numberOfNeuronsInNextLayer: number,
             netOptions: ANNOptions,
             isBiasUnit: boolean
         }) {
-            // + 1 for Bias Unit            
-            for (let i = 0; i < options.numberOfNeuronsInPrevLayer + 1; i++)
-                this.weights.push(new Weight());
 
-            if (options.isBiasUnit) this.setOutput(1);
-            this.activationFunction = options.netOptions.activationFunction;
+            if (this.isBias()) this.output = 1;
+
+            // Generate weights
+            for (let n = 0; n < options.numberOfNeuronsInNextLayer; n++) {
+                this.weights.push(new Weight());
+            }
+
+            // set shorthand for activation function
+            this.activationFunction = this.options.netOptions.activationFunction;
+
         }
 
-        public activate(prevLayer: Layer) {
-
-            if (this.options.isBiasUnit) {
-                throw 'Cannot activate Bias Unit!';
+        public propagateForward(prevLayer: Layer) {
+            if (this.isBias()) {
+                throw 'A bias unit should not propagate a value forward.'
             }
-            
-            this.input = prevLayer.neurons.reduce((sum, n, i) => {
-                return sum + n.output * this.weights[i].value;
-            }, 0);
+            let sigma = 0;
+            prevLayer.forEachNeuron(n => {
+                sigma += n.output * n.getWeightTo(this).value;
+            });
 
+            this.input = sigma;
             this.output = this.activationFunction.output(this.input);
-            
+
+
+        }
+
+        public calculateOutputLayerDelta(target: number) {
+            if (this.isBias()) throw 'There should not be an output layer delta calculation for a bias unit for it is never used.';
+            this.delta = this.options.netOptions.errorFunction.der(this.output, target) * this.activationFunction.der(this.input);
+        }
+
+        public calculateHiddenLayerDelta(nextLayer: Layer) {
+            if (this.isBias()) throw 'There should not be an hidden layer delta calculation for a bias unit for it is not connected to the previous layer.';
+
+            let sigma = 0;
+            nextLayer.forEachNeuron((n, i) => {
+                sigma += n.delta * this.weights[i].value;
+            }, true);
+
+            this.delta = this.activationFunction.der(this.input) * sigma;
+        }
+
+        /*public updateWeights(nextLayer: Layer) {
+            this.weights = this.weights.map((w, i) => {
+                let derivative = this.output * nextLayer.neurons[i].delta;
+                w.value -= this.options.netOptions.learningRate * derivative;
+                return w;
+            });
+        };*/
+        public updateWeights(prevLayer: Layer) {
+            prevLayer.forEachNeuron((n, i) => {
+                let oldWeight = n.weights[this.getIndex()];
+                let derivativeTerm = n.output * this.delta;
+                oldWeight.value -= this.options.netOptions.learningRate * derivativeTerm;
+            });
         };
 
-        public calculateDelta(nextLayer: Layer, targetValue?: number) {
-            if(!nextLayer){
-                //Output layer                
-                this.delta = this.options.netOptions.errorFunction.der(this.output, targetValue) * this.activationFunction.der(this.input);
-                
-            }else{
-                let deltaSum = 0;
-                nextLayer.forEachNeuron((n, i) => {
-                    deltaSum += n.delta * n.weights[this.getIndex()+1].value;
-                }, true);
-                this.delta = deltaSum * this.activationFunction.der(this.input);
-            }
-        }
-
-        public updateWeights(prevLayer: Layer) {
-
-            /*console.log('Weights length', this.weights.length);*/
-            
-            
-           this.weights = this.weights.map((w, i) => {                
-                let derivative = prevLayer.neurons[i].output * this.delta;
-                w.value =w.value - this.options.netOptions.learningRate * derivative;
-                return w;
-           });
-           /*console.log('________');*/
-           
+        /**
+         * 
+         * @param n Neuron in next layer k
+         */
+        public getWeightTo(n: Neuron) {
+            return this.weights[n.getIndex()];
         }
 
         public isBias() {
             return this.options.isBiasUnit;
-        }
-
-
-        public setOutput(value: number) {
-            this.output = value;
         }
 
         public getIndex() {
@@ -133,80 +142,86 @@ export module FeedForward {
     export class Network {
         layers: Layer[] = [];
         constructor(private options: ANNOptions) {
-
-            // Create Layers
-            options.layers.forEach((l, i) => {
+            for (let l = 0; l < options.layers.length; l++) {
                 this.layers.push(new Layer({
-                    numberOfNeurons: l,
-                    numberOfNeuronsInPrevLayer: options.layers[i - 1] || 0,
-                    netOptions: options
-                }));
-            });
-
-            //console.log(this.layers.map(l => l.neurons.length));
-            
+                    netOptions: options,
+                    numberOfNeurons: options.layers[l],
+                    numberOfNeuronsInNextLayer: options.layers[l + 1] || 0
+                }))
+            }
         }
 
         private get inputLayer() {
-            return this.layers[0];
+            return this.layers[0]
         }
         private get outputLayer() {
             return this.layers[this.layers.length - 1];
         }
 
-        private get hiddenLayers() {
-            return this.layers.slice(1, -2);
+        public propagateForward(inputs: number[]) {
+            if (inputs.length != this.inputLayer.neurons.length - 1) {
+                throw "Inputs do not match network size!";
+            }
+            // Set input layer neurons output to input values; exclude bias of course
+            this.inputLayer.forEachNeuron((n, i) => n.output = inputs[i], true);
+
+
+            // propagate values forward through layer starting from first hidden layer
+            for (let l = 1; l < this.layers.length; l++) {
+                let layer = this.layers[l];
+                let prevLayer = this.layers[l - 1];
+                layer.forEachNeuron(n => n.propagateForward(prevLayer), true);
+            }
+
+            return this;
+
         }
 
-        public getOutput() {
-            return this.outputLayer.neurons.slice(1).map(n => n.output);
+        public getCurrentOutput() {
+            return this.outputLayer.neurons.map(n => n.output).slice(0, -1);
         }
 
-        public feedForwardPass(values: number[]) {
-            // Set Output Signal of Input Layer Neurons
-            this.inputLayer.forEachNeuron((n, i) => n.setOutput(values[i]), true);
+        public calculateDeltas(targetValues: number[]) {
+            // calculate Output layer calculateDeltas
+            this.outputLayer.forEachNeuron((n, i) => n.calculateOutputLayerDelta(targetValues[i]), true);
 
-            for(let i = 1; i < this.layers.length; i++){
-                let layer = this.layers[i];
-                let prevLayer = this.layers[i-1];
-                layer.forEachNeuron(n => n.activate(prevLayer), true);
+            // propagate error backwards through hidden layers
+            for (let l = this.layers.length - 2; l > 0; l--) {
+                let layer = this.layers[l];
+                let nextLayer = this.layers[l + 1];
+                layer.forEachNeuron(n => n.calculateHiddenLayerDelta(nextLayer), true);
             }
 
             return this;
         }
 
-        public backwardPass(targetValues: number[]) {
-            for(let i = this.layers.length - 1; i > 0; i--){
-                let layer = this.layers[i];
-                let nextLayer = this.layers[i+1];
-                layer.forEachNeuron((n, i) => n.calculateDelta(nextLayer, targetValues[i]), true);
-            }
-            return this;
-        }
 
         public updateWeights() {
-            for(let i = 1; i < this.layers.length; i++){
-                let layer = this.layers[i];                
-                let prevLayer = this.layers[i-1];
+
+            // go through all layers except input layer and update all the weight with the calculated deltaValues.
+            for (let l = 1; l < this.layers.length; l++) {
+                let layer = this.layers[l];
+                let prevLayer = this.layers[l - 1];                
                 layer.forEachNeuron(n => n.updateWeights(prevLayer), true);
+                
             }
+
             return this;
         }
 
-        public train(input: number[], targetValues: number[]) {
-            this.feedForwardPass(input);
-            this.backwardPass(targetValues);
-            this.updateWeights();
+        public fit(inputs: number[], targetValues: number[]) {
+            this.propagateForward(inputs).calculateDeltas(targetValues).updateWeights();
             return this;
         }
 
-        public error(target: number[]) {
-            let sum = 0;
-            let output = this.getOutput();
-            target.forEach((t, i) => {
-                sum += this.options.errorFunction.error(output[i], t);
-            })
-            return sum;
+        public predict(inputs: number[]){
+            return this.propagateForward(inputs).getCurrentOutput();
+        }
+
+        public getCurrentError(targetValues: number[]) {
+            return this.getCurrentOutput().reduce((s, o, i) => {
+                return s + this.options.errorFunction.error(o, targetValues[i])
+            }, 0);
         }
     }
 }
