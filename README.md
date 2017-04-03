@@ -22,6 +22,7 @@ The use of Visual Studio Code is recommended.
         - MSE as `tf.Errors.SQUARE`
         - Cross Entropy as `tf.Errors.CROSS_ENTROPY`
 - K-Nearest-Neighbor (KNN) as `tf.KNNClassifier`
+- K-Means as `tf.KMeans`
 - Matrix class as `tf.Matrix`
 - Helper and Utilities
     - Class name to value mapper as `tf.ClassToValue`
