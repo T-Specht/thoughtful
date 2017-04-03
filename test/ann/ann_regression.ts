@@ -22,7 +22,7 @@ let ann = new tf.FeedForward.Network({
 });
 
 
-tf.repeat(() => {
+tf.Utilities.repeat(() => {
     for (let d of data) {
         let input = [d[0]],
             target = [d[1]];

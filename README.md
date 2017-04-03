@@ -23,8 +23,18 @@ The use of Visual Studio Code is recommended.
         - Cross Entropy as `tf.Errors.CROSS_ENTROPY`
 - K-Nearest-Neighbor (KNN) as `tf.KNNClassifier`
 - Matrix class as `tf.Matrix`
-- Helper Methods
+- Helper and Utilities
     - Class name to value mapper as `tf.ClassToValue`
-    - Repeat function as `tf.repeat`
-    - CSV-string to JSON/Array parser as `tf.csvStringToJSON`
-    - Normalization as `tf.Normalization.MinMaxNormalizer`
+    - Utility functions as `tf.Utilities.[Name]`
+        - Repeat function as `tf.Utilities.repeat`
+        - CSV-string to JSON/Array parser as `tf.Utilities.csvStringToJSON`
+        - Normalization as `tf.Normalization.MinMaxNormalizer`
+        - Pick random value from array with `tf.Utilities.pickRandomFromArray`
+    - Various distance calculations as `tf.Distances.[NAME]`
+        - Euclidean Distance as `tf.Distances.EUCLIDEAN`
+        - Taxi/Manhattan Distance as `tf.Distances.TAXI`
+        - Levenshtein Distance as `tf.Distances.LEVENSHTEIN`
+    - Various extending math functions as `tf.Maths.[NAME]`
+        - Random integer in range as `tf.Maths.randomInt`
+        - Random arbitrary in range as `tf.Maths.random`
+        - argmax as `tf.Maths.argmax`

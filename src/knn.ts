@@ -1,4 +1,4 @@
-import { ClassToValue } from '.';
+import { ClassToValue, NumericDistanceFunction, Distances, Maths } from '.';
 
 export class KNNClassifier{
 
@@ -7,7 +7,7 @@ export class KNNClassifier{
         attr: number[]
     }[] = [];
 
-    constructor(private k = 3){
+    constructor(private k = 3, private distanceFunction: NumericDistanceFunction = Distances.EUCLIDEAN){
         return this;
     }
 
@@ -31,7 +31,7 @@ export class KNNClassifier{
         this.data.forEach((entry, i) => {
             return distances.push({
                 index: i,
-                distance: this.distance(input, entry.attr)
+                distance: this.distanceFunction(input, entry.attr)
             });
         });
 
@@ -49,7 +49,7 @@ export class KNNClassifier{
         let kNearestClasses = kNearest.map(e => this.data[e.index].c);
 
         // get the most often occurring class
-        let c =  this.argMax(kNearestClasses);
+        let c =  Maths.argmax(kNearestClasses);
 
         // return value or class if c2v is passed
 
@@ -57,30 +57,6 @@ export class KNNClassifier{
 
     }
 
-    private argMax(args: number[]){
-        let record = {};
-        args.forEach(a => record[a] = record[a] + 1 || 1);
-        
-        let max = record[args[0]];
-        let arg = args[0];
-
-        for(let key of args){
-            if(record[key] > max){
-                max = record[key];
-                arg = key;
-            }
-        }
-
-        return arg;
-        
-    }
-
-    private distance(a: number[], b: number[]){
-        let sigma = 0;
-        for(let i = 0; i < a.length; i++){
-            sigma += Math.pow(a[i] - b[i], 2);
-        }
-        return Math.sqrt(sigma);
-    }
+    
 
 }

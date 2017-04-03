@@ -28,7 +28,7 @@ let data = [
     },
 ]
 
-tf.repeat(() => {
+tf.Utilities.repeat(() => {
     for (let d of data) {
         ann.fit(d.input, d.output);
     }
