@@ -25,9 +25,54 @@ Now, we can create a new Network like:
 ```javascript
 let ann = new tf.FeedForward.Network({
     layers: [2, 3, 1],
-    learningRate: 0.1,
+    learningRate: 1,
     momentum: 0,
     activationFunction: tf.Activations.SIGMOID,
-    errorFunction: tf.Errors.SQUARE,
+    errorFunction: tf.Errors.CROSS_ENTROPY,
 });
 ```
+
+Train it with the method `ann.fit(input: number[], targetValues: number[])` and calculate the error with `ann.error(input: number[], targetValues: number[])`.
+
+```javascript
+// Train network on XOR
+let data = [
+    {
+        input: [0, 0],
+        output: [0]
+    },
+    {
+        input: [1, 0],
+        output: [1]
+    },
+    {
+        input: [0, 1],
+        output: [1]
+    },
+    {
+        input: [1, 1],
+        output: [0]
+    },
+];
+
+// Simple training with fixed training iterations which may not work at every execution but is enough for simple testing purposes.
+for(let i = 0; i < 1000; i++){
+    for(let example of data){
+        ann.fit(example.input, example.output);
+        // Log current error
+        console.log(ann.error(example.input, example.output));
+    }
+}
+```
+
+To predict outputs for new inputs, use the method `ann.predict(input: number[])`
+
+```javascript
+// Get network's prediction for training XOR data
+for(let example of data){
+    let prediction = ann.predict(example.input);
+    console.log(`Input: ${example.input}, network output: ${prediction}, expected: ${example.output}`)
+}
+```
+
+> Please note that we were using ES6 standards in the examples given above. To use the code provided you need to bundle and transpile it.
