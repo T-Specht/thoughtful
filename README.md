@@ -1,4 +1,4 @@
-# <img src="docs/images/logo-outline.svg" width="25"> thoughtful.js
+# <img src="docs/images/logo-outline.png" width="25"> thoughtful.js
 A zero dependency Machine Learning library for JavaScript.
 
 # Usage
