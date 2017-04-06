@@ -55,10 +55,10 @@ export declare module FeedForward {
          */
         predict(inputs: number[]): number[];
         /**
-         * Calculate the error for current outputs
+         * Calculate the error for current outputs (not forward pass)
          * @param targetValues target values
          */
-        private getCurrentError(targetValues);
+        getCurrentError(targetValues: number[]): number;
         /**
          * Calculates the error for given inputs
          * @param inputs inputs to network

@@ -4,5 +4,5 @@ export declare class KMeans {
     private numberOfClusters;
     private clusters;
     constructor(data: number[][], numberOfClusters: any);
-    fitClusters(distanceFunction: NumericDistanceFunction): number[][];
+    fitClusters(distanceFunction?: NumericDistanceFunction): number[][];
 }

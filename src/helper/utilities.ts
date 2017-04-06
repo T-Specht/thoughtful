@@ -25,6 +25,6 @@ export namespace Utilities {
     }
 
     export function pickRandomFromArray(array: any[]) {
-        return array[Maths.randomInt(0, array.length)];
+        return array[Maths.randomInt(0, array.length-1)];
     }
 }

@@ -22,4 +22,12 @@ export namespace Maths{
         return arg;
         
     }
+
+    export function randomBool(){
+        return Math.random() > 0.5 ? true : false;
+    }
+    export function round(value: number, decimals = 1){
+        let f = Math.pow(10, decimals);
+        return Math.round(value * f) / f;
+    }
 }

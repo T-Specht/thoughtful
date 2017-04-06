@@ -7,5 +7,6 @@ export * from './helper/classToValue';
 export * from './helper/distances';
 export * from './helper/normalization';
 export * from './helper/maths';
+export * from './helper/generators';
 export * from './knn';
 export * from './k-means';

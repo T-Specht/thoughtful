@@ -6,14 +6,14 @@ export interface NumericDistanceFunction {
 export class Distances {
 
     public static EUCLIDEAN: NumericDistanceFunction = (a: number[], b: number[]) => {
-        return Math.sqrt(a.reduce((a, i) => {
-            return Math.pow(a - b[i], 2)
+        return Math.sqrt(a.reduce((s, a, i) => {
+            return s + Math.pow(a - b[i], 2)
         }, 0));
     }
 
     public static TAXI: NumericDistanceFunction = (a: number[], b: number[]) => {
-         return a.reduce((a, i) => {
-            return Math.abs(a - b[i])
+         return a.reduce((s, a, i) => {
+            return s + Math.abs(a - b[i])
         }, 0);
     }
 

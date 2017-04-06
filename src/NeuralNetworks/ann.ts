@@ -288,10 +288,10 @@ export module FeedForward {
         }
 
         /**
-         * Calculate the error for current outputs
+         * Calculate the error for current outputs (not forward pass)
          * @param targetValues target values
          */
-        private getCurrentError(targetValues: number[]) {
+        public getCurrentError(targetValues: number[]) {
             return this.getCurrentOutput().reduce((s, o, i) => {
                 return s + this.options.errorFunction.error(o, targetValues[i])
             }, 0);
