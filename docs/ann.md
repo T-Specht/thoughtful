@@ -16,13 +16,13 @@ Predefined are:
     - Tanh as `tf.Activations.TANH`
     - RELU as `tf.Activations.RELU`
     - Linear as `tf.Activations.LINEAR`
-- Error Function: Which function should be used to calculate the network's error. You can define your own error function (refer to the interface `tf.Activations.ErrorFunction`) or use one of the following predefined ones:
+- Error Function: Which function should be used to calculate the network's error? You can define your own error function (refer to the interface `tf.Activations.ErrorFunction`) or use one of the following predefined ones:
     - MSE as `tf.Errors.SQUARE`
     - Cross Entropy as `tf.Errors.CROSS_ENTROPY`
 
 Most of the times, you have to experiment a lot to find the right parameters for the network.
 
-Now, we can create a new Network like:
+Now, we can create a new instance of an ANN with the following code snippet:
 
 ```javascript
 let ann = new tf.FeedForward.Network({
