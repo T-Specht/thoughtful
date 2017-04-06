@@ -12,7 +12,7 @@ The use of Visual Studio Code is recommended.
 
 # Features and Algorithms
 
-- Feed forward Artificial Neural Network (ANN) as `tf.FeedForward.Network`
+- [Feed forward Artificial Neural Network](docs/ann.md) (ANN) as `tf.FeedForward.Network`
     - Variable Activations in network options as `tf.Activations.[NAME]`
         - Sigmoid as `tf.Activations.SIGMOID`
         - Tanh as `tf.Activations.TANH`
