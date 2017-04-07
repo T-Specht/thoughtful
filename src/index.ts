@@ -1,5 +1,5 @@
 export * from './matrix';
-export * from './NeuralNetworks/ann';
+export * from './NeuralNetworks/ann.matrix';
 export * from './NeuralNetworks/activationFunctions';
 export * from './NeuralNetworks/errorFunctions';
 export * from './helper/utilities';

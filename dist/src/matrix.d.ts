@@ -22,7 +22,7 @@ export declare class Matrix {
     slice(startRow: number, endRow: number, startColumn: number, endColumn: number): Matrix;
     map(func: (val: number, row?: number, column?: number) => number): this;
     forEach(func: (val: number, row?: number, column?: number) => void): this;
-    fill(newVal: number): void;
+    fill(newVal: number): this;
     scale(scl: number): this;
     add(m: Matrix): this;
     subtract(m: Matrix): this;

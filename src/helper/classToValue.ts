@@ -1,18 +1,18 @@
-export class ClassToValue{
+export class ClassToValue {
 
     private dictionary: string[] = [];
 
-    toValue(className: string){
+    toValue(className: string) {
 
-        if(this.dictionary.includes(className)){
+        if (this.dictionary.includes(className)) {
             return this.dictionary.indexOf(className)
-        }else{
+        } else {
             this.dictionary.push(className);
             return this.dictionary.length - 1;
         }
     }
 
-    toClass(value: number){
+    toClass(value: number) {
         return this.dictionary[value];
     }
 }

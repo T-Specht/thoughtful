@@ -161,7 +161,7 @@ export class Matrix{
     }
 
     public fill(newVal: number){
-        this.map(v => newVal);
+        return this.map(v => newVal);
     }
 
     public scale(scl: number){
