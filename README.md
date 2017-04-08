@@ -7,8 +7,7 @@ A zero dependency Machine Learning library for JavaScript.
 import * as tf from 'thoughtful';
 ```
 
-Please refer to the included d.ts definition files for the usage of specific features or algorithms for now.
-The use of Visual Studio Code is recommended.
+Documentation can be found at the [repository's wiki](https://github.com/T-Specht/thoughtful/wiki) for now!
 
 # Features and Algorithms
 
