@@ -2,7 +2,7 @@ import * as tf from '..';
 import * as fs from 'fs';
 
 
-let ann = new tf.FeedForward.Network({
+let ann = new tf.FeedForwardANNMatrixBeta.Network({
     activationFunction: tf.Activations.SIGMOID,
     errorFunction: tf.Errors.CROSS_ENTROPY,
     layers: [2, 3, 1],
@@ -27,12 +27,5 @@ let Y = new tf.Matrix([
 ]);
 
 
-/*console.log('y Hat:');
-ann.forwardPass(X);*/
-/*tf.Utilities.repeat(() => {
-    //console.log('Error:', tf.Maths.sum(ann.error(X, Y)));
-    ann.forwardPass(X).show();
-    ann.backwardPass(Y);
-    ann.updateWeights();
-
-}, 20);*/
+ann.forwardPass(X).show();
+ann.error(X, Y).show();
