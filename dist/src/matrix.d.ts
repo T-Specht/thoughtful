@@ -9,6 +9,7 @@ export declare class Matrix {
     static ones(rows: number, columns: number): Matrix;
     static eye(size: number): Matrix;
     static join(m1: Matrix, m2: Matrix, pos?: 'top' | 'bottom' | 'left' | 'right'): Matrix;
+    size(): number[];
     getNumberOfRows(): number;
     getNumberOfColumns(): number;
     getDimensions(): number[];

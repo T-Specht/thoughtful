@@ -1,3 +1,5 @@
+import { Matrix } from '..';
+
 export namespace Maths{
     export function randomInt(min: number, max: number){
         return Math.floor(Math.random() * (max + 1 - min) + min);
@@ -29,5 +31,9 @@ export namespace Maths{
     export function round(value: number, decimals = 1){
         let f = Math.pow(10, decimals);
         return Math.round(value * f) / f;
+    }
+    export function sum(c: number[] | Matrix){
+        let M = c instanceof Matrix ? c.getColumnAsRowVector(0).getArray()[0] : c;
+        return M.reduce((s, x) => s + x, 0);
     }
 }

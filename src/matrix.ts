@@ -63,6 +63,10 @@ export class Matrix{
 
         return new Matrix(newData);
     }
+
+    public size(){
+        return [this.getNumberOfRows(), this.getNumberOfColumns()];
+    }
     
     public getNumberOfRows(){
         return this.data.length;

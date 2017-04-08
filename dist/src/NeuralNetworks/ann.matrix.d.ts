@@ -10,9 +10,13 @@ export declare module FeedForward {
     class Network {
         private options;
         private weights;
-        layerInputs: Matrix[];
+        private deltas;
+        layers: Matrix[];
+        private inputs;
         constructor(options: ANNOptions);
         forwardPass(inputs: Matrix | number[]): Matrix;
+        backwardPass(targets: Matrix | number[]): void;
+        updateWeights(): void;
         error(inputs: Matrix | number[], targets: Matrix | number[]): Matrix;
     }
 }
