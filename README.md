@@ -1,3 +1,7 @@
+[![npm](https://img.shields.io/npm/v/thoughtful.svg)](https://www.npmjs.com/package/thoughtful)
+[![npm](https://img.shields.io/npm/l/thoughtful.svg)](https://www.npmjs.com/package/thoughtful)
+[![npm](https://img.shields.io/npm/dt/thoughtful.svg)](https://www.npmjs.com/package/thoughtful)
+
 # <img src="icon.png" width="25"> thoughtful.js
 A zero dependency Machine Learning library for JavaScript.
 
