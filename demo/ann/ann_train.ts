@@ -1,7 +1,7 @@
 import * as tf from '../..';
 import * as fs from 'fs';
 
-let ann = new tf.FeedForward.Network({
+let ann = new tf.FeedForwardNeuralNetwork({
     activationFunction: tf.Activations.SIGMOID,
     errorFunction: tf.Errors.SQUARE,
     layers: [2, 3, 1],

@@ -3,7 +3,7 @@ import * as tf from '../..';
 
 const data = tf.Generators.clouds(3);
 
-let ann = new tf.FeedForward.Network({
+let ann = new tf.FeedForwardNeuralNetwork({
     activationFunction: tf.Activations.SIGMOID,
     errorFunction: tf.Errors.CROSS_ENTROPY,
     layers: [data[0].points[0].length, 5, data.length],

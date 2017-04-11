@@ -13,7 +13,7 @@ const data = (() => {
     return ret;
 })();
 
-let ann = new tf.FeedForward.Network({
+let ann = new tf.FeedForwardNeuralNetwork({
     activationFunction: tf.Activations.RELU,
     errorFunction: tf.Errors.SQUARE,
     layers: [1, 4, 1],

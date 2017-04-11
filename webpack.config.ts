@@ -1,9 +1,8 @@
 import { Configuration as WebpackConfiguration, Compiler } from 'webpack';
 import { resolve } from 'path';
-import {bundle as dts_bundle} from "dts-bundle";
-import { rmdirSync } from "fs";
+import { bundle as dts_bundle } from "dts-bundle";
 import * as rimraf from "rimraf";
-
+let TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 
 
 export default {
@@ -24,7 +23,11 @@ export default {
         ]
     },
     plugins: [
-        new DtsBundlePlugin()
+        new DtsBundlePlugin(),
+        new TypedocWebpackPlugin({
+            out: resolve('docs'),
+            mode: 'file'
+        }, resolve('src', 'index.ts'))
     ]
 } as WebpackConfiguration
 
@@ -32,15 +35,16 @@ export default {
 
 // Bundling Definition files
 // https://medium.com/@vladimirtolstikov/how-to-merge-d-ts-typings-with-dts-bundle-and-webpack-e8903d699576
-function DtsBundlePlugin(){};
+function DtsBundlePlugin() { };
 DtsBundlePlugin.prototype.apply = function (compiler: Compiler) {
     compiler.plugin('done', () => {
         dts_bundle({
             name: 'thoughtful',
             main: resolve('dist', 'src', 'index.d.ts'),
             out: resolve('dist', 'thoughtful.d.ts'),
-            removeSource: true
-        })
+            removeSource: true,
+            outputAsModuleFolder: true
+        } as any)
         // Remove generated src/ files were types were stored before bundle
         rimraf.sync(resolve('dist', 'src'));
     });

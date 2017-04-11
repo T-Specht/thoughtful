@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>FeedForward | thoughtful</title>
+	<title>ANNOptions | thoughtful</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,36 +56,92 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="feedforward.html">FeedForward</a>
+					<a href="annoptions.html">ANNOptions</a>
 				</li>
 			</ul>
-			<h1>Module FeedForward</h1>
+			<h1>Interface ANNOptions</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">ANNOptions</span>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Classes</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-module tsd-is-not-exported"><a href="../classes/feedforward.layer.html" class="tsd-kind-icon">Layer</a></li>
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/feedforward.network.html" class="tsd-kind-icon">Network</a></li>
-								<li class="tsd-kind-class tsd-parent-kind-module tsd-is-not-exported"><a href="../classes/feedforward.neuron.html" class="tsd-kind-icon">Neuron</a></li>
-								<li class="tsd-kind-class tsd-parent-kind-module tsd-is-not-exported"><a href="../classes/feedforward.weight.html" class="tsd-kind-icon">Weight</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Interfaces</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/feedforward.annoptions.html" class="tsd-kind-icon">ANNOptions</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="annoptions.html#activationfunction" class="tsd-kind-icon">activation<wbr>Function</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="annoptions.html#errorfunction" class="tsd-kind-icon">error<wbr>Function</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="annoptions.html#layers" class="tsd-kind-icon">layers</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="annoptions.html#learningrate" class="tsd-kind-icon">learning<wbr>Rate</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="annoptions.html#momentum" class="tsd-kind-icon">momentum</a></li>
 							</ul>
 						</section>
 					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="activationfunction" class="tsd-anchor"></a>
+					<h3>activation<wbr>Function</h3>
+					<div class="tsd-signature tsd-kind-icon">activation<wbr>Function<span class="tsd-signature-symbol">:</span> <a href="activationfunction.html" class="tsd-signature-type">ActivationFunction</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/T-Specht/thoughtful/blob/3a1b802/src/NeuralNetworks/ann.ts#L6">NeuralNetworks/ann.ts:6</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="errorfunction" class="tsd-anchor"></a>
+					<h3>error<wbr>Function</h3>
+					<div class="tsd-signature tsd-kind-icon">error<wbr>Function<span class="tsd-signature-symbol">:</span> <a href="errorfunction.html" class="tsd-signature-type">ErrorFunction</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/T-Specht/thoughtful/blob/3a1b802/src/NeuralNetworks/ann.ts#L7">NeuralNetworks/ann.ts:7</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="layers" class="tsd-anchor"></a>
+					<h3>layers</h3>
+					<div class="tsd-signature tsd-kind-icon">layers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/T-Specht/thoughtful/blob/3a1b802/src/NeuralNetworks/ann.ts#L5">NeuralNetworks/ann.ts:5</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="learningrate" class="tsd-anchor"></a>
+					<h3>learning<wbr>Rate</h3>
+					<div class="tsd-signature tsd-kind-icon">learning<wbr>Rate<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/T-Specht/thoughtful/blob/3a1b802/src/NeuralNetworks/ann.ts#L4">NeuralNetworks/ann.ts:4</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="momentum" class="tsd-anchor"></a>
+					<h3>momentum</h3>
+					<div class="tsd-signature tsd-kind-icon">momentum<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/T-Specht/thoughtful/blob/3a1b802/src/NeuralNetworks/ann.ts#L8">NeuralNetworks/ann.ts:8</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -95,39 +151,75 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class="current tsd-kind-module">
-						<a href="feedforward.html">Feed<wbr>Forward</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="generators.html">Generators</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="maths.html">Maths</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="normalization.html">Normalization</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="utilities.html">Utilities</a>
-					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../classes/feedforward.layer.html" class="tsd-kind-icon">Layer</a>
+					<li class=" tsd-kind-class">
+						<a href="../classes/activations.html" class="tsd-kind-icon">Activations</a>
 					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/feedforward.network.html" class="tsd-kind-icon">Network</a>
+					<li class=" tsd-kind-class">
+						<a href="../classes/classtovalue.html" class="tsd-kind-icon">Class<wbr>ToValue</a>
 					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../classes/feedforward.neuron.html" class="tsd-kind-icon">Neuron</a>
+					<li class=" tsd-kind-class">
+						<a href="../classes/distances.html" class="tsd-kind-icon">Distances</a>
 					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../classes/feedforward.weight.html" class="tsd-kind-icon">Weight</a>
+					<li class=" tsd-kind-class">
+						<a href="../classes/errors.html" class="tsd-kind-icon">Errors</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/feedforward.annoptions.html" class="tsd-kind-icon">ANNOptions</a>
+					<li class=" tsd-kind-class">
+						<a href="../classes/feedforwardneuralnetwork.html" class="tsd-kind-icon">Feed<wbr>Forward<wbr>Neural<wbr>Network</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/kmeans.html" class="tsd-kind-icon">KMeans</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/knnclassifier.html" class="tsd-kind-icon">KNNClassifier</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="../classes/layer.html" class="tsd-kind-icon">Layer</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/matrix.html" class="tsd-kind-icon">Matrix</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="../classes/neuron.html" class="tsd-kind-icon">Neuron</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-not-exported">
+						<a href="../classes/weight.html" class="tsd-kind-icon">Weight</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
+						<a href="annoptions.html" class="tsd-kind-icon">ANNOptions</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="annoptions.html#activationfunction" class="tsd-kind-icon">activation<wbr>Function</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="annoptions.html#errorfunction" class="tsd-kind-icon">error<wbr>Function</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="annoptions.html#layers" class="tsd-kind-icon">layers</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="annoptions.html#learningrate" class="tsd-kind-icon">learning<wbr>Rate</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="annoptions.html#momentum" class="tsd-kind-icon">momentum</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-interface">
+						<a href="activationfunction.html" class="tsd-kind-icon">Activation<wbr>Function</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="errorfunction.html" class="tsd-kind-icon">Error<wbr>Function</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="numericdistancefunction.html" class="tsd-kind-icon">Numeric<wbr>Distance<wbr>Function</a>
 					</li>
 				</ul>
 			</nav>

@@ -3,7 +3,7 @@ import * as fs from 'fs';
 
 const weights = JSON.parse(fs.readFileSync('./network.json', 'utf8'));
 
-let ann = tf.FeedForward.Network.restore(weights, {
+let ann = tf.FeedForwardNeuralNetwork.restore(weights, {
     activationFunction: tf.Activations.SIGMOID,
     errorFunction: tf.Errors.SQUARE,
     layers: [2, 3, 1],

@@ -1,5 +1,5 @@
 import * as tf from "../..";
-let ann = new tf.FeedForward.Network({
+let ann = new tf.FeedForwardNeuralNetwork({
     layers: [2, 3, 1],
     learningRate: 1,
     momentum: 0,
