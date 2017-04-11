@@ -1,4 +1,4 @@
-import { Configuration as WebpackConfiguration } from 'webpack';
+import { Configuration as WebpackConfiguration, Compiler } from 'webpack';
 import { resolve } from 'path';
 export default {
     entry: resolve('src', 'index.ts'),
@@ -17,3 +17,4 @@ export default {
         ]
     }
 } as WebpackConfiguration
+
