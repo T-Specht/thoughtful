@@ -1,11 +1,18 @@
 import { Configuration as WebpackConfiguration, Compiler } from 'webpack';
 import { resolve } from 'path';
+import {bundle as dts_bundle} from "dts-bundle";
+import { rmdirSync } from "fs";
+import * as rimraf from "rimraf";
+
+
+
 export default {
     entry: resolve('src', 'index.ts'),
     output: {
         path: resolve('dist'),
-        filename: 'index.js',
-        libraryTarget: 'commonjs'
+        filename: 'thoughtful.min.js',
+        library: 'thoughtful',
+        libraryTarget: 'umd'
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
@@ -15,6 +22,23 @@ export default {
         rules: [
             { test: /\.ts/, use: ['ts-loader'] }
         ]
-    }
+    },
+    plugins: [
+        new DtsBundlePlugin()
+    ]
 } as WebpackConfiguration
 
+function DtsBundlePlugin(){};
+DtsBundlePlugin.prototype.apply = function (compiler: Compiler) {
+    compiler.plugin('done', () => {
+        dts_bundle({
+            name: 'thoughtful',
+            main: resolve('dist', 'src', 'index.d.ts'),
+            out: resolve('dist', 'thoughtful.d.ts'),
+            removeSource: true,
+            outputAsModuleFolder: true
+        })
+        // Remove generated src/ files were types were stored before bundle
+        rimraf.sync(resolve('dist', 'src'));
+    });
+}

@@ -2,8 +2,8 @@
   "name": "thoughtful",
   "version": "1.4.7",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/src",
+  "main": "dist/thoughtful.min.js",
+  "types": "dist/thoughtful.d.ts",
   "repository": {
     "url": "https://github.com/T-Specht/thoughtful",
     "type": "git"
@@ -13,6 +13,7 @@
     "@types/webpack": "^2.2.12",
     "dts-bundle": "^0.7.2",
     "mnist": "^1.0.5",
+    "rimraf": "^2.6.1",
     "ts-loader": "^2.0.3",
     "ts-node": "^3.0.2",
     "typescript": "^2.2.1",
