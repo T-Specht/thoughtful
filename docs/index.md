@@ -14,7 +14,7 @@ import * as tf from 'thoughtful'
 
 Following machine learning algorithms are included:
 
-- [Feed Forward Neural Network](Feed-Forward-Neural-Network)
+- [Feed Forward Neural Network](feed-forward-neural-network)
 - K-Nearest-Neighbour
 - K-Means Clustering
 
