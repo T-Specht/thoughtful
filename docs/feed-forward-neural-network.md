@@ -4,7 +4,7 @@ A [Feed Forward Neural Network](https://en.wikipedia.org/wiki/Artificial_neural_
 
 <!--![Representation of an ANN](https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Colored_neural_network.svg/296px-Colored_neural_network.svg.png)-->
 
-You can access the ANN using `tf.FeedForward.Network`. To create a new ANN, you have to specify these specific options:
+You can access the ANN using `tf.FeedForwardNeuralNetwork`. To create a new ANN, you have to specify these specific options:
 - Network size: Specify the network's size as a JavaScript Array where each element in the array represents a layer and the value the number of neurons. (`[2, 3, 1]` would create a 3-Layer-Network with 2 neurons in first layer, 3 in the second and so on...)
 - Learning rate: How fast should the network learn? Most likely a small value less than `1`
 - Momentum: Most likely small value less than `1`
@@ -23,7 +23,7 @@ Most of the times, you have to experiment a lot to find the right parameters for
 Now, we can create a new instance of an ANN with the following code snippet:
 
 ```javascript
-let ann = new tf.FeedForward.Network({
+let ann = new tf.FeedForwardNeuralNetwork({
     layers: [2, 3, 1],
     learningRate: 1,
     momentum: 0,
