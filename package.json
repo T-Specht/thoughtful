@@ -9,7 +9,9 @@
     "type": "git"
   },
   "devDependencies": {
+    "@types/dts-bundle": "0.0.30",
     "@types/node": "^7.0.11",
+    "@types/rimraf": "0.0.28",
     "@types/webpack": "^2.2.12",
     "dts-bundle": "^0.7.2",
     "mnist": "^1.0.5",

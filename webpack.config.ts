@@ -28,6 +28,10 @@ export default {
     ]
 } as WebpackConfiguration
 
+
+
+// Bundling Definition files
+// https://medium.com/@vladimirtolstikov/how-to-merge-d-ts-typings-with-dts-bundle-and-webpack-e8903d699576
 function DtsBundlePlugin(){};
 DtsBundlePlugin.prototype.apply = function (compiler: Compiler) {
     compiler.plugin('done', () => {
@@ -35,8 +39,7 @@ DtsBundlePlugin.prototype.apply = function (compiler: Compiler) {
             name: 'thoughtful',
             main: resolve('dist', 'src', 'index.d.ts'),
             out: resolve('dist', 'thoughtful.d.ts'),
-            removeSource: true,
-            outputAsModuleFolder: true
+            removeSource: true
         })
         // Remove generated src/ files were types were stored before bundle
         rimraf.sync(resolve('dist', 'src'));
