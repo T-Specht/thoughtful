@@ -2,8 +2,6 @@ import { Configuration as WebpackConfiguration, Compiler } from 'webpack';
 import { resolve } from 'path';
 import { bundle as dts_bundle } from "dts-bundle";
 import * as rimraf from "rimraf";
-let TypedocWebpackPlugin = require('typedoc-webpack-plugin');
-
 
 export default {
     entry: resolve('src', 'index.ts'),
@@ -23,11 +21,7 @@ export default {
         ]
     },
     plugins: [
-        new DtsBundlePlugin(),
-        new TypedocWebpackPlugin({
-            out: resolve('docs'),
-            mode: 'file'
-        }, resolve('src', 'index.ts'))
+        new DtsBundlePlugin()
     ]
 } as WebpackConfiguration
 

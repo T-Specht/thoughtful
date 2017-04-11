@@ -19,7 +19,6 @@
     "ts-loader": "^2.0.3",
     "ts-node": "^3.0.2",
     "typedoc": "^0.5.10",
-    "typedoc-webpack-plugin": "^1.1.3",
     "typescript": "^2.2.1",
     "webpack": "^2.3.2"
   },
@@ -34,7 +33,7 @@
     "build:dev": "webpack -d --watch",
     "build:prod": "webpack -p",
     "push_update": "npm run build:prod && npm publish",
-    "docs": "typedoc ./src/index.ts --out ./docs/ --mode file"
+    "docs": "typedoc ./src/index.ts --out ./type-docs/ --mode file"
   },
   "author": "",
   "license": "ISC"
