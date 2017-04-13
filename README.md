@@ -19,7 +19,7 @@ import * as tf from 'thoughtful'
 
 Following machine learning algorithms are included:
 
-- [Feed Forward Neural Network](feed-forward-neural-network)
+- [Feed Forward Neural Network](https://t-specht.github.io/thoughtful/feed-forward-neural-network)
 - Naive Bayes Classification
 - K-Nearest-Neighbour
 - K-Means Clustering
