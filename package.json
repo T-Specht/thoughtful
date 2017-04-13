@@ -1,6 +1,6 @@
 {
   "name": "thoughtful",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "",
   "main": "dist/thoughtful.min.js",
   "types": "dist/thoughtful.d.ts",
