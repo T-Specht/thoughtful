@@ -105,11 +105,12 @@ export namespace Utilities {
     function repeat(func: (iterations?: number) => any, iterations: number): void;
     function csvStringToJSON(csv: string, tryObjectParseIfPossible?: boolean, columnSeparator?: string, rowSeparator?: string): {}[] | (string | number)[][];
     function pickRandomFromArray(array: any[]): any;
+    function tokenize(str: string, exp?: RegExp): string[];
 }
 
-export class ClassToValue {
-    toValue(className: string): number;
-    toClass(value: number): string;
+export class LabelToValue {
+    toValue(label: string): number;
+    toLabel(value: number): string;
 }
 
 export interface NumericDistanceFunction {
@@ -149,11 +150,32 @@ export namespace Generators {
 export class KNNClassifier {
     constructor(k?: number, distanceFunction?: NumericDistanceFunction);
     addData(classes: number[], data: number[][]): this;
-    predict(input: number[], c2v?: ClassToValue): string | number;
+    predict(input: number[], l2v?: LabelToValue): string | number;
 }
 
 export class KMeans {
     constructor(data: number[][], numberOfClusters: any);
     fitClusters(distanceFunction?: NumericDistanceFunction): number[][];
+}
+
+export class NaiveBayesClassifier {
+    /**
+      * words = {
+      *  "word1": {
+      *     "label1": count
+      *     "label2": count
+      *  }
+      *  "word2": {
+      *     "label1": count
+      *     "label2": count
+      *  }
+      * }
+      */
+    words: {};
+    docs: {};
+    labels: string[];
+    constructor(tokenizeMethod?: (string) => string[]);
+    add(text: string, _label: number | string): void;
+    classify(text: string): string;
 }
 

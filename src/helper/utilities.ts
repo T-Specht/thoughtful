@@ -27,4 +27,8 @@ export namespace Utilities {
     export function pickRandomFromArray(array: any[]) {
         return array[Maths.randomInt(0, array.length-1)];
     }
+
+    export function tokenize(str: string, exp = /\W/){
+        return str.split(exp).filter(t => t.trim() != '');
+    }
 }

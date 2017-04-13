@@ -2,7 +2,7 @@ import * as tf from '..';
 import * as fs from 'fs';
 import { resolve } from 'path';
 
-const c2v = new tf.ClassToValue();
+const c2v = new tf();
 
 const data = tf.Utilities.csvStringToJSON(fs.readFileSync(resolve(__dirname, 'data', 'real_estate.csv'), 'utf8'), false, ';').slice(1).map(r => {
     r[0] = c2v.toValue(r[0]);

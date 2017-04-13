@@ -1,4 +1,4 @@
-import { ClassToValue, NumericDistanceFunction, Distances, Maths } from '.';
+import { LabelToValue, NumericDistanceFunction, Distances, Maths } from '.';
 
 export class KNNClassifier{
 
@@ -21,7 +21,7 @@ export class KNNClassifier{
         return this;        
     }
 
-    public predict(input: number[], c2v?: ClassToValue){
+    public predict(input: number[], l2v?: LabelToValue){
         let distances: {
             index: number,
             distance: number
@@ -51,9 +51,9 @@ export class KNNClassifier{
         // get the most often occurring class
         let c =  Maths.argmax(kNearestClasses);
 
-        // return value or class if c2v is passed
+        // return value or class if l2v is passed
 
-        return c2v ? c2v.toClass(c) : c;
+        return l2v ? l2v.toLabel(c) : c;
 
     }
 

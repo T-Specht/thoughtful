@@ -31,7 +31,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:dev": "webpack -d --watch",
-    "build:prod": "webpack -p",
+    "build:prod": "NODE_ENV=production webpack -p",
     "push_update": "npm run build:prod && npm publish",
     "docs": "typedoc ./src/index.ts --out ./type-docs/ --mode file"
   },

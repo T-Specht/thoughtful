@@ -3,6 +3,11 @@ import { resolve } from 'path';
 import { bundle as dts_bundle } from "dts-bundle";
 import * as rimraf from "rimraf";
 
+const IS_PROD = process.env.NODE_ENV == 'production';
+
+console.log(IS_PROD);
+
+
 export default {
     entry: resolve('src', 'index.ts'),
     output: {
@@ -36,10 +41,10 @@ DtsBundlePlugin.prototype.apply = function (compiler: Compiler) {
             name: 'thoughtful',
             main: resolve('dist', 'src', 'index.d.ts'),
             out: resolve('dist', 'thoughtful.d.ts'),
-            removeSource: true,
+            removeSource: IS_PROD,
             outputAsModuleFolder: true
         } as any)
         // Remove generated src/ files were types were stored before bundle
-        rimraf.sync(resolve('dist', 'src'));
+        if(IS_PROD) rimraf.sync(resolve('dist', 'src'));
     });
 }
