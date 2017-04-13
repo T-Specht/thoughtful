@@ -23,7 +23,6 @@ for(let example of DATA){
     nbc.add(example.sentence, example.label);
 }
 
-
 const TEST = fs.readFileSync(resolve(__dirname, 'data', 'sentiment_test.txt'), 'utf8').trim().split('\n');
 
 tf.Utilities.repeat(() => {
