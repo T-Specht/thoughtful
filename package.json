@@ -1,6 +1,6 @@
 {
   "name": "thoughtful",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "A Machine Learning library for JavaScript",
   "main": "dist/thoughtful.min.js",
   "types": "dist/thoughtful.d.ts",
