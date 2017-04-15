@@ -9,6 +9,7 @@ export class Matrix {
     static rand(rows: number, columns: number): Matrix;
     static ones(rows: number, columns: number): Matrix;
     static eye(size: number): Matrix;
+    apply(func: (number) => number): void;
     static join(m1: Matrix, m2: Matrix, pos?: 'top' | 'bottom' | 'left' | 'right'): Matrix;
     size(): number[];
     getNumberOfRows(): number;
@@ -26,16 +27,92 @@ export class Matrix {
     forEach(func: (val: number, row?: number, column?: number) => void): this;
     fill(newVal: number): this;
     scale(scl: number): this;
-    add(m: Matrix): this;
-    subtract(m: Matrix): this;
-    multiply(m: Matrix): this;
-    divide(m: Matrix): this;
-    dot(m: Matrix): this;
+    add(tensor: Matrix): this;
+    subtract(tensor: Matrix | Vector): this;
+    multiply(tensor: Matrix | Vector): this;
+    divide(tensor: Matrix | Vector): this;
+    dot(tensor: Matrix | Vector): this;
+    getVector(): void;
     transpose(): this;
     min(): Matrix;
     max(): Matrix;
     show(): this;
     getAsString(markup?: boolean, joinChar?: string, lineSpaceChar?: string, end?: string, fixed?: number): string;
+}
+
+export interface NumericDistanceFunction {
+    (a: number[], b: number[]): number;
+}
+export class Distances {
+    static EUCLIDEAN: NumericDistanceFunction;
+    static TAXI: NumericDistanceFunction;
+    static LEVENSHTEIN: (a: string, b: string) => any;
+}
+
+export namespace Normalization {
+    class MinMaxNormalizer {
+        constructor(data: number[][]);
+        normalizeExampleData(): number[][];
+        normalizeNewDataRow(row: number[]): number[];
+        denormalize(row: number[]): number[];
+    }
+}
+
+export namespace Maths {
+    function randomInt(min: number, max: number): number;
+    function random(min: number, max: number): number;
+    function argmax(args: number[]): number;
+    function randomBool(): boolean;
+    function round(value: number, decimals?: number): number;
+    function sum(c: number[]): number;
+    namespace Tensor2D {
+        namespace ElementWise {
+            function add(...tensors: number[][][]): number[][];
+            function subtract(...tensors: number[][][]): number[][];
+            function multiply(...tensors: number[][][]): number[][];
+            function divide(...tensors: number[][][]): number[][];
+            function scale(t: number[][], scl: number): number[][];
+        }
+        function dot(t1: number[][], t2: number[][]): any[][];
+        function transpose(t: number[][]): any[][];
+        function sameSize(...tensors: number[][][]): boolean;
+        /**
+          *
+          * @param size - Size of the 2D Tensor as an array with [#rows, #columns]
+          * @param fill
+          */
+        function generate(size: number[], fillValue?: ((row?: number, column?: number) => number) | number): any[][];
+        function fill(tensor: number[][], fillValue: ((row?: number, column?: number) => number) | number): number[][];
+        function getSize(t: number[][]): number[];
+        function isValid(t: number[][]): boolean;
+        function apply(t: number[][], func: (value?: number, row?: number, col?: number) => number): number[][];
+    }
+}
+
+export class Vector {
+    constructor(components: number[]);
+    static rand(size: number): Vector;
+    copy(): Vector;
+    getArray(): number[];
+    append(vec: Vector): this;
+    prepend(vec: Vector): this;
+    readonly size: number;
+    readonly magnitude: number;
+    get(component: number): number;
+    set(component: number, value: number): this;
+    add(vec: Vector): this;
+    subtract(vec: Vector): this;
+    multiply(vec: Vector): this;
+    divide(vec: Vector): this;
+    pow(exponent: number): this;
+    sum(): number;
+    scale(scl: number): this;
+    /**
+      * this vector will be a row vector
+      * @param vec column vector
+      */
+    dot(vec: Vector): number;
+    apply(func: (number) => number): this;
 }
 
 export interface ANNOptions {
@@ -101,6 +178,24 @@ export class Errors {
     static CROSS_ENTROPY: ErrorFunction;
 }
 
+export class ANN {
+    constructor(options: {
+        size: number[];
+        activation: ActivationFunction;
+        error: ErrorFunction;
+        learningRate: number;
+        momentum?: number;
+    });
+    cost(target: number[]): number;
+    backPropagate(target: number[]): void;
+    updateWeights(): void;
+    /**
+      *
+      * @param input Vector of Input values matching network size
+      */
+    query(input: number[]): any[];
+}
+
 export namespace Utilities {
     function repeat(func: (iterations?: number) => any, iterations: number): void;
     function csvStringToJSON(csv: string, tryObjectParseIfPossible?: boolean, columnSeparator?: string, rowSeparator?: string): {}[] | (string | number)[][];
@@ -111,33 +206,6 @@ export namespace Utilities {
 export class LabelToValue {
     toValue(label: string): number;
     toLabel(value: number): string;
-}
-
-export interface NumericDistanceFunction {
-    (a: number[], b: number[]): number;
-}
-export class Distances {
-    static EUCLIDEAN: NumericDistanceFunction;
-    static TAXI: NumericDistanceFunction;
-    static LEVENSHTEIN: (a: string, b: string) => any;
-}
-
-export namespace Normalization {
-    class MinMaxNormalizer {
-        constructor(data: number[][]);
-        normalizeExampleData(): number[][];
-        normalizeNewDataRow(row: number[]): number[];
-        denormalize(row: number[]): number[];
-    }
-}
-
-export namespace Maths {
-    function randomInt(min: number, max: number): number;
-    function random(min: number, max: number): number;
-    function argmax(args: number[]): number;
-    function randomBool(): boolean;
-    function round(value: number, decimals?: number): number;
-    function sum(c: number[] | Matrix): number;
 }
 
 export namespace Generators {

@@ -1,3 +1,5 @@
+import { Vector } from "..";
+
 export class Matrix{
 
     public data: number[][];
@@ -40,6 +42,10 @@ export class Matrix{
         let m = new Matrix(size, size);
         for(let i = 0; i < size; i++) m.set(i, i, 1);
         return m;
+    }
+
+    public apply(func: (number) => number){
+        this.map(v => func(v));
     }
 
     public static join(m1: Matrix, m2: Matrix, pos: 'top' | 'bottom' | 'left' | 'right' = 'bottom'){
@@ -172,25 +178,33 @@ export class Matrix{
         return this.map(v => v*scl);
     }
 
-    public add(m: Matrix){
+    public add(tensor: Matrix){
+        let m = this.transformVectorToMatrix(tensor);
         if(!this.hasSameDimensions(m)) this.error('size', 'addition');
         return this.map((v, row, col) => v + m.get(row, col));
     }
 
-    public subtract(m: Matrix){
+    public subtract(tensor: Matrix | Vector){
+        let m = this.transformVectorToMatrix(tensor);
         if(!this.hasSameDimensions(m)) this.error('size', 'subtraction');
         return this.map((v, row, col) => v - m.get(row, col));
     }
-    public multiply(m: Matrix){
+    public multiply(tensor: Matrix | Vector){
+        let m = this.transformVectorToMatrix(tensor);
         if(!this.hasSameDimensions(m)) this.error('size', 'multiplication');
         return this.map((v, row, col) => v * m.get(row, col));
     }
-    public divide(m: Matrix){
+    public divide(tensor: Matrix | Vector){
+        let m = this.transformVectorToMatrix(tensor);
         if(!this.hasSameDimensions(m)) this.error('size', 'division');
         return this.map((v, row, col) => v / m.get(row, col));
     }
 
-    public dot(m: Matrix){
+    
+
+    public dot(tensor: Matrix | Vector){
+
+        let m = this.transformVectorToMatrix(tensor);
         if(!(this.getNumberOfColumns() == m.getNumberOfRows())) this.error('size', 'dot product');
 
         let newData = Matrix.get2DArray(this.getNumberOfRows(), m.getNumberOfColumns());
@@ -205,6 +219,14 @@ export class Matrix{
 
         this.data = newData;
         return this;
+    }
+
+    private transformVectorToMatrix(tentativeVec: Vector | Matrix): Matrix{
+        return tentativeVec instanceof Matrix ? tentativeVec :  Matrix.columnVector(...tentativeVec.getArray());
+    }
+
+    public getVector(){
+
     }
 
     public transpose(){

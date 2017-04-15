@@ -35,7 +35,7 @@ export default {
 // Bundling Definition files
 // https://medium.com/@vladimirtolstikov/how-to-merge-d-ts-typings-with-dts-bundle-and-webpack-e8903d699576
 function DtsBundlePlugin() { };
-DtsBundlePlugin.prototype.apply = function (compiler: Compiler) {
+DtsBundlePlugin.prototype.apply = function (compiler: Compiler) {    
     compiler.plugin('done', () => {
         dts_bundle({
             name: 'thoughtful',
