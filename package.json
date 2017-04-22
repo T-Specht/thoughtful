@@ -10,11 +10,14 @@
   },
   "devDependencies": {
     "@types/dts-bundle": "0.0.30",
+    "@types/mathjs": "0.0.34",
     "@types/node": "^7.0.12",
     "@types/rimraf": "0.0.28",
     "@types/webpack": "^2.2.12",
     "dts-bundle": "^0.7.2",
     "mnist": "^1.0.5",
+    "numeric": "^1.2.6",
+    "plotter": "^0.5.0",
     "rimraf": "^2.6.1",
     "ts-loader": "^2.0.3",
     "ts-node": "^3.0.2",
@@ -36,5 +39,8 @@
     "docs": "typedoc ./src/index.ts --out ./type-docs/ --mode file"
   },
   "author": "Tim Specht",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "mathjs": "^3.11.5"
+  }
 }

@@ -1,20 +1,20 @@
 import { Maths, ActivationFunction, ErrorFunction} from "..";
-
+import * as mathjs from 'mathjs';
 
 export class ANN{
 
     /*  Declare Tensors */
 
     // Array of Matrices (#layers - 1)
-    private weights: Maths.Matrix[] = [];
+    private weights: number[][][] = [];
     // Array of Column Vectors (#layers - 1)
-    private biases: Maths.Vector[] = [];
+    private biases: number[][][] = [];
     // Array of Column Vectors (#layers)
-    private inputs: Maths.Vector[] = [];
+    private inputs: number[][][] = [];
     // Array of Column Vectors (#layers)
-    private outputs: Maths.Vector[] = [];
+    private outputs: number[][][] = [];
     // Array of Column Vectors (#layers-1)
-    private deltas: Maths.Vector[] = [];
+    private deltas: number[][][] = [];
 
     constructor(private options: {
         size: number[],

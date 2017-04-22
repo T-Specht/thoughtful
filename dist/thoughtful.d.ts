@@ -59,6 +59,9 @@ export namespace Normalization {
 }
 
 export namespace Maths {
+    type Tensor = number[][];
+    type Vector = number[][];
+    type Matrix = number[][];
     function randomInt(min: number, max: number): number;
     function random(min: number, max: number): number;
     function argmax(args: number[]): number;
@@ -66,26 +69,27 @@ export namespace Maths {
     function round(value: number, decimals?: number): number;
     function sum(c: number[]): number;
     namespace Tensor2D {
+        function getAsString(t: Tensor, markup?: boolean, joinChar?: string, lineSpaceChar?: string, end?: string, fixed?: number): string;
         namespace ElementWise {
-            function add(...tensors: number[][][]): number[][];
-            function subtract(...tensors: number[][][]): number[][];
-            function multiply(...tensors: number[][][]): number[][];
-            function divide(...tensors: number[][][]): number[][];
-            function scale(t: number[][], scl: number): number[][];
+            function add(...tensors: Tensor[]): number[][];
+            function subtract(...tensors: Tensor[]): number[][];
+            function multiply(...tensors: Tensor[]): number[][];
+            function divide(...tensors: Tensor[]): number[][];
+            function scale(t: Tensor, scl: number): number[][];
         }
-        function dot(t1: number[][], t2: number[][]): any[][];
-        function transpose(t: number[][]): any[][];
-        function sameSize(...tensors: number[][][]): boolean;
+        function dot(t1: Tensor, t2: Tensor): any[];
+        function transpose(t: Tensor): number[][];
+        function sameSize(...tensors: Tensor[]): boolean;
         /**
           *
           * @param size - Size of the 2D Tensor as an array with [#rows, #columns]
           * @param fill
           */
-        function generate(size: number[], fillValue?: ((row?: number, column?: number) => number) | number): any[][];
-        function fill(tensor: number[][], fillValue: ((row?: number, column?: number) => number) | number): number[][];
-        function getSize(t: number[][]): number[];
-        function isValid(t: number[][]): boolean;
-        function apply(t: number[][], func: (value?: number, row?: number, col?: number) => number): number[][];
+        function generate(size: number[], fillValue?: ((row?: number, column?: number) => number) | number): number[][];
+        function fill(tensor: Tensor, fillValue: ((row?: number, column?: number) => number) | number): number[][];
+        function getSize(t: Tensor): number[];
+        function isValid(t: Tensor): boolean;
+        function apply(t: Tensor, func: (value?: number, row?: number, col?: number) => number): number[][];
     }
 }
 
@@ -193,7 +197,7 @@ export class ANN {
       *
       * @param input Vector of Input values matching network size
       */
-    query(input: number[]): any[];
+    query(input: number[]): number[];
 }
 
 export namespace Utilities {
