@@ -190,14 +190,11 @@ export class ANN {
         learningRate: number;
         momentum?: number;
     });
-    cost(target: number[]): number;
-    backPropagate(target: number[]): void;
-    updateWeights(): void;
-    /**
-      *
-      * @param input Vector of Input values matching network size
-      */
-    query(input: number[]): number[];
+    cost(output: Maths.Vector, target: Maths.Vector): number;
+    backward(target: Maths.Vector): number[][][];
+    calculateGradients(deltas?: Maths.Vector[]): number[][][];
+    updateWeightsAndBiases(gradients?: Maths.Vector[], deltas?: Maths.Vector[]): void;
+    forward(input: Maths.Vector): number[][];
 }
 
 export namespace Utilities {

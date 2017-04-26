@@ -1,7 +1,7 @@
-import { Maths, ActivationFunction, ErrorFunction} from "..";
+import { Maths, ActivationFunction, ErrorFunction } from "..";
+import * as n from 'numeric';
 
-
-export class ANN{
+export class ANN {
 
     /*  Declare Tensors */
 
@@ -16,126 +16,114 @@ export class ANN{
     // Array of Column Vectors (#layers-1)
     private deltas: Maths.Vector[] = [];
 
+    private gradients: Maths.Vector[] = [];
+
     constructor(private options: {
         size: number[],
         activation: ActivationFunction,
         error: ErrorFunction,
         learningRate: number,
         momentum?: number
-    }){
+    }) {
         options.momentum = options.momentum | 0;
         const SIZE = this.options.size;
         // Generate Weights
-        for(let j = 0; j < SIZE.length - 1; j++){
-            this.weights.push(Maths.Tensor2D.generate([SIZE[j+1], SIZE[j]], Math.random));
+        for (let i = 0; i < SIZE.length - 1; i++) {
+            this.weights.push(n.random([SIZE[i], SIZE[i + 1]]));
+            this.biases.push(n.random([SIZE[i + 1], 1]));
         }
-        // Generate Biases
-        for(let j = 1; j < SIZE.length; j++){
-            this.biases.push(Maths.Tensor2D.generate([SIZE[j], 1], Math.random));
-        }
+
     }
 
-    public cost(target: number[]){
-        let targetVector = target.map(v => [v]); // Column Vector
-        
-        let outputVector = this.outputs[this.outputs.length - 1]; // Column Vector
-        
-        let outputLayerSize = this.options.size[this.options.size.length-1];
-        let errorSum = 0;
-        for(let i = 0; i < outputLayerSize; i++){
-            
-            let o = outputVector[0][i],
-                t = targetVector[0][i];                
-            errorSum += this.options.error.error(o, t);            
+    private apply(tensor: Maths.Tensor, func: (number) => number) {
+        let rows = tensor.length;
+        let cols = tensor[0].length;
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                tensor[i][j] = func(tensor[i][j]);
+            }
         }
-        return errorSum;
+        return tensor;
     }
 
-    public backPropagate(target: number[]){
-        // Reset old deltas
+    public cost(output: Maths.Vector, target: Maths.Vector): number {
+        return n.mul(0.5, n.sum(n.pow(n.sub(target, output), 2)));
+    }
+
+    public backward(target: Maths.Vector) {
+        // Reset deltas
         this.deltas = [];
 
-        // Calculate output layer delta vector
-        let outputVector = this.outputs[this.outputs.length-1];
-        
-        // Error function derivative
-        let errorDerivative = [outputVector[0].map((o, i) => {                       
-            return this.options.error.der(o, target[i]);
-        })];
-        
-        // Calculate Delta by multiplying with output layer g'(inputs)
-        let delta = Maths.Tensor2D.ElementWise.multiply(errorDerivative, Maths.Tensor2D.apply(this.inputs[this.inputs.length - 1], this.options.activation.der));
+        // Output Layer Delta with MSE function
+        let lastLayerActivity = this.outputs[this.outputs.length - 1];
+        let lastLayerInput = this.inputs[this.inputs.length - 1];
+        let errorDerivative = n.sub(lastLayerActivity, target);
+        let outputLayerDelta = n.mul(errorDerivative, this.apply(lastLayerInput, this.options.activation.der));
 
-        // Save output layer delta vector
-        this.deltas.unshift(delta);
+        this.deltas.unshift(outputLayerDelta);
+        
 
-        for(let l = this.options.size.length - 2; l > 0; l--){
-            let lastLayerDelta = this.deltas[0];           
-            let weightsT = Maths.Tensor2D.transpose(this.weights[l]);
-            let layerInput = this.inputs[l];
-            let dotWeightsT_LastLayerDelta = Maths.Tensor2D.dot(weightsT, lastLayerDelta);
-            let delta = Maths.Tensor2D.ElementWise.multiply(dotWeightsT_LastLayerDelta, Maths.Tensor2D.apply(layerInput, this.options.activation.der));
+        for (let i = this.outputs.length - 2; i > 0; i--) {            
+            let layerActivity = this.outputs[i];
+            let layerInput = this.outputs[i];
+            let nextLayerDelta = this.deltas[0];
+            let activationDerivative = this.apply(layerInput, this.options.activation.der);
+            let weights = this.weights[i];
+
+            let delta = n.mul(n.dot(weights, nextLayerDelta), activationDerivative);
+
             this.deltas.unshift(delta);
-        }               
-
-    }
-
-    public updateWeights(){
-        let weightsDerivatives: number[][][] = [];
-
-        for(let l = this.options.size.length - 1; l > 0; l--){
-            let outputPrevLayer = this.outputs[l-1];
-            let delta = this.outputs[l];
-
-            let weightsDerivative = Maths.Tensor2D.dot(delta, Maths.Tensor2D.transpose(outputPrevLayer));
-
-            let weights = this.weights[l-1];
-
-            this.weights[l-1] = Maths.Tensor2D.ElementWise.subtract(weights, Maths.Tensor2D.ElementWise.scale(weightsDerivative, this.options.learningRate));
-
-            this.biases[l-1] = Maths.Tensor2D.ElementWise.subtract(this.biases[l-1], Maths.Tensor2D.ElementWise.scale(delta, this.options.learningRate));
-
-            weightsDerivatives.unshift(weightsDerivative);
         }
-        //console.log(derivatives);
-        
+
+        return this.deltas;
     }
 
-    /**
-     * 
-     * @param input Vector of Input values matching network size
-     */
-    public query(input: number[]){
+    public calculateGradients(deltas: Maths.Vector[] = this.deltas){
+        // Reset gradients
+        this.gradients = [];
 
-        //Clear set tensors
+        for(let i = this.outputs.length - 1; i > 0; i--){
+            let prevLayerActivity = this.outputs[i-1];
+            let deltaTranspose = n.transpose(this.deltas[i-1]);
+            let gradient = n.dot(prevLayerActivity, deltaTranspose);
+            this.gradients.unshift(gradient);
+        }
+        return this.gradients;
+    }
+
+    public updateWeightsAndBiases(gradients: Maths.Vector[] = this.gradients, deltas: Maths.Vector[] = this.deltas){
+        const ALPHA = this.options.learningRate;
+                
+        for(let i = 0; i < this.weights.length; i++){
+            this.weights[i] = n.sub(this.weights[i], n.mul(ALPHA, gradients[i]));
+            this.biases[i] = n.sub(this.biases[i], n.mul(ALPHA, deltas[i]));
+        }
+
+    }
+
+    forward(input: Maths.Vector) {
         this.inputs = [];
         this.outputs = [];
 
-        // Convert to tensor, which is a column vector
-        let inputVector = input.map(i => [i]);
+        let prevLayerActivity = input;
 
-        // Store inputs in appropriate tensors
-        this.inputs.push(inputVector);
-        this.outputs.push(inputVector);
+        // Save for backward pass
+        this.inputs.push(prevLayerActivity);
+        this.outputs.push(prevLayerActivity);
 
-        // Forward propagation
-        let tmp = inputVector;
-        for(let i = 0; i < this.weights.length; i++){
-            // Calculate Input Values
-            let beforeActivation = Maths.Tensor2D.dot(this.weights[i], tmp);       
-            // Add Bias terms
-            beforeActivation = Maths.Tensor2D.ElementWise.add(beforeActivation, this.biases[i]);
-            // Save beforeActivation vector
-            this.inputs.push(beforeActivation);
-            // Apply activation function to layer
-            let activity = Maths.Tensor2D.apply(beforeActivation, this.options.activation.output);
-            // Save layer activity as output
-            this.outputs.push(activity);
-            // Set this for tmp
-            tmp = activity;
+        for (let i = 0; i < this.weights.length; i++) {
+
+            let weightsTranspose = n.transpose(this.weights[i]);
+            let biases = this.biases[i];
+            let z = n.add(n.dot(weightsTranspose, prevLayerActivity), biases);
+            let a = this.apply(z, this.options.activation.output);
+            prevLayerActivity = a;
+
+            // Save backward pass
+            this.inputs.push(z);
+            this.outputs.push(a);
         }
-        let output = tmp;
-        // Return result as array
-        return Maths.Tensor2D.transpose(output)[0];
-    }    
+        return prevLayerActivity;
+    }
+
 }

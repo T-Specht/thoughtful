@@ -4,7 +4,7 @@
 [![npm](https://img.shields.io/npm/dt/thoughtful.svg)](https://www.npmjs.com/package/thoughtful)
 
 # <img src="icon.png" width="25"> thoughtful.js
-A zero dependency Machine Learning library for JavaScript.
+A Machine Learning library for JavaScript.
 
 Install it using NPM with the following command:
 `npm install thoughtful --save`

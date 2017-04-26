@@ -1,3 +1,5 @@
+
+
 export interface ActivationFunction {
     output: (input: number) => number;
     der: (input: number) => number;

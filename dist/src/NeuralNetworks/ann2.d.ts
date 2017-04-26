@@ -1,4 +1,4 @@
-import { ActivationFunction, ErrorFunction } from "..";
+import { Maths, ActivationFunction, ErrorFunction } from "..";
 export declare class ANN {
     private options;
     private weights;
@@ -6,6 +6,7 @@ export declare class ANN {
     private inputs;
     private outputs;
     private deltas;
+    private gradients;
     constructor(options: {
         size: number[];
         activation: ActivationFunction;
@@ -13,12 +14,10 @@ export declare class ANN {
         learningRate: number;
         momentum?: number;
     });
-    cost(target: number[]): number;
-    backPropagate(target: number[]): void;
-    updateWeights(): void;
-    /**
-     *
-     * @param input Vector of Input values matching network size
-     */
-    query(input: number[]): number[];
+    private apply(tensor, func);
+    cost(output: Maths.Vector, target: Maths.Vector): number;
+    backward(target: Maths.Vector): number[][][];
+    calculateGradients(deltas?: Maths.Vector[]): number[][][];
+    updateWeightsAndBiases(gradients?: Maths.Vector[], deltas?: Maths.Vector[]): void;
+    forward(input: Maths.Vector): number[][];
 }
